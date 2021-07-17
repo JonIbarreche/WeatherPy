@@ -1,5 +1,7 @@
 # ElTiempoJon
 
+**Version 1.0.0**
+
 Aplicacion para obtener la informacion meteorológica de una ciudad usando [Python](https://www.python.org/downloads/)
 
 ---
