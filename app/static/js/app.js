@@ -1,21 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const formClima = document.getElementById('form-clima');
-    const resultadoClima = document.getElementById('resultado-clima');
-    const mensajeError = document.getElementById('mensaje-error');
+    const weatherForm = document.getElementById('weather-form');
+    const weatherResult = document.getElementById('weather-result');
+    const errorMessage = document.getElementById('error-message');
+    const forecastSection = document.getElementById('forecast-section');
+    const loadCitiesBtn = document.getElementById('load-cities');
     
-    // Elementos del resultado
-    const ciudadResultado = document.getElementById('ciudad-resultado');
-    const iconoClima = document.getElementById('icono-clima');
-    const descripcionClima = document.getElementById('descripcion-clima');
-    const temperatura = document.getElementById('temperatura');
-    const humedad = document.getElementById('humedad');
-    const viento = document.getElementById('viento');
-    const presion = document.getElementById('presion');
+    // Result elements
+    const cityResult = document.getElementById('city-result');
+    const weatherIcon = document.getElementById('weather-icon');
+    const weatherDescription = document.getElementById('weather-description');
+    const temperature = document.getElementById('temperature');
+    const humidity = document.getElementById('humidity');
+    const wind = document.getElementById('wind');
+    const pressure = document.getElementById('pressure');
     
-    // Formatear fecha actual
-    function obtenerFechaFormateada() {
-        const fecha = new Date();
-        const opciones = { 
+    // Format current date
+    function getFormattedDate() {
+        const date = new Date();
+        const options = { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
@@ -23,71 +25,141 @@ document.addEventListener('DOMContentLoaded', function() {
             hour: '2-digit',
             minute: '2-digit'
         };
-        return fecha.toLocaleDateString('es-ES', opciones);
+        return date.toLocaleDateString('en-US', options);
     }
     
-    // Manejar el envío del formulario
-    formClima.addEventListener('submit', function(e) {
+    // Handle form submission
+    weatherForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Ocultar mensajes previos
-        resultadoClima.classList.add('d-none');
-        mensajeError.classList.add('d-none');
+        // Hide previous messages
+        weatherResult.classList.add('d-none');
+        forecastSection.classList.add('d-none');
+        errorMessage.classList.add('d-none');
         
-        const formData = new FormData(formClima);
-        const ciudad = formData.get('ciudad');
+        const formData = new FormData(weatherForm);
+        const city = formData.get('city');
         
-        // Verificar que se ingresó una ciudad
-        if (!ciudad.trim()) {
-            mostrarError('Por favor ingrese una ciudad');
+        // Verify that a city was entered
+        if (!city.trim()) {
+            showError('Please enter a city');
             return;
         }
         
-        // Realizar la petición a la API
-        fetch('/clima', {
+        // Make API request
+        fetch('/weather', {
             method: 'POST',
             body: formData
         })
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                mostrarError(data.error);
+                showError(data.error);
             } else {
-                mostrarResultado(data);
+                showWeatherResult(data);
             }
         })
         .catch(error => {
-            mostrarError('Error al conectar con el servidor');
+            showError('Error connecting to the server');
             console.error('Error:', error);
         });
     });
     
-    // Mostrar mensaje de error
-    function mostrarError(mensaje) {
-        mensajeError.textContent = mensaje;
-        mensajeError.classList.remove('d-none');
+    // Show error message
+    function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove('d-none');
     }
     
-    // Mostrar el resultado del clima
-    function mostrarResultado(data) {
-        // Actualizar elementos del DOM
-        ciudadResultado.textContent = `${data.ciudad}, ${data.pais}`;
-        iconoClima.src = `http://openweathermap.org/img/wn/${data.icono}@2x.png`;
-        descripcionClima.textContent = data.descripcion.charAt(0).toUpperCase() + data.descripcion.slice(1);
-        temperatura.textContent = `${data.temperatura}°C`;
-        humedad.textContent = `${data.humedad}%`;
-        viento.textContent = `${data.viento} km/h`;
-        presion.textContent = `${data.presion} hPa`;
+    // Show weather result
+    function showWeatherResult(data) {
+        // Update DOM elements
+        cityResult.textContent = `${data.city}, ${data.country}`;
+        weatherIcon.src = `http://openweathermap.org/img/wn/${data.icon}@2x.png`;
+        weatherDescription.textContent = capitalizeFirstLetter(data.description);
+        temperature.textContent = `${data.temperature}°C`;
+        humidity.textContent = `${data.humidity}%`;
+        wind.textContent = `${data.wind} km/h`;
+        pressure.textContent = `${data.pressure} hPa`;
         
-        if (document.getElementById('fecha-actual')) {
-            document.getElementById('fecha-actual').textContent = obtenerFechaFormateada();
+        if (document.getElementById('current-date')) {
+            document.getElementById('current-date').textContent = getFormattedDate();
         }
         
-        if (document.getElementById('sensacion')) {
-            document.getElementById('sensacion').textContent = `Sensación térmica: ${data.sensacion_termica}°C`;
+        if (document.getElementById('feels-like')) {
+            document.getElementById('feels-like').textContent = `Feels like: ${data.feels_like}°C`;
         }
         
-        // Mostrar el resultado
-        resultadoClima.classList.remove('d-none');
+        // Show the result
+        weatherResult.classList.remove('d-none');
+        
+        // Display forecast if available
+        if (data.daily_forecast && data.daily_forecast.length > 0) {
+            displayForecast(data.daily_forecast);
+        }
+    }
+    
+    // Display 7-day forecast
+    function displayForecast(forecast) {
+        const forecastContainer = document.getElementById('forecast-container');
+        forecastContainer.innerHTML = '';
+        
+        const template = document.getElementById('forecast-day-template');
+        
+        forecast.forEach(day => {
+            const clone = template.content.cloneNode(true);
+            
+            clone.querySelector('.forecast-date').textContent = day.date;
+            clone.querySelector('.forecast-icon').src = `http://openweathermap.org/img/wn/${day.icon}.png`;
+            clone.querySelector('.forecast-max').textContent = `${day.temp_max}°`;
+            clone.querySelector('.forecast-min').textContent = `${day.temp_min}°`;
+            clone.querySelector('.forecast-desc').textContent = capitalizeFirstLetter(day.description);
+            
+            forecastContainer.appendChild(clone);
+        });
+        
+        forecastSection.classList.remove('d-none');
+    }
+    
+    // Load major cities weather
+    loadCitiesBtn.addEventListener('click', function() {
+        this.disabled = true;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+        
+        fetch('/cities-weather')
+            .then(response => response.json())
+            .then(cities => {
+                displayCities(cities);
+                this.innerHTML = '<i class="fas fa-check me-1"></i> Loaded';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                this.innerHTML = '<i class="fas fa-exclamation-triangle me-1"></i> Try Again';
+                this.disabled = false;
+            });
+    });
+    
+    // Display major cities
+    function displayCities(cities) {
+        const citiesContainer = document.getElementById('cities-container');
+        citiesContainer.innerHTML = '';
+        
+        const template = document.getElementById('city-card-template');
+        
+        cities.forEach(city => {
+            const clone = template.content.cloneNode(true);
+            
+            clone.querySelector('.city-name').textContent = `${city.city}, ${city.country}`;
+            clone.querySelector('.city-icon').src = `http://openweathermap.org/img/wn/${city.icon}.png`;
+            clone.querySelector('.city-temp').textContent = `${city.temperature}°C`;
+            clone.querySelector('.city-desc').textContent = capitalizeFirstLetter(city.description);
+            
+            citiesContainer.appendChild(clone);
+        });
+    }
+    
+    // Helper function to capitalize first letter
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
 }); 
