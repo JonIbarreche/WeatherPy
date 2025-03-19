@@ -1,4 +1,4 @@
-# WeatherPy
+# 🌤️ WeatherPy
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
@@ -6,7 +6,7 @@
 
 A weather application that provides real-time weather information and forecasts for cities around the world using the OpenWeatherMap API.
 
-## Features
+## ✨ Features
 
 - **Current Weather Information**: Get detailed weather data for any city including temperature, humidity, wind speed, and pressure
 - **Major World Cities**: View weather conditions for major cities around the world at a glance
@@ -14,7 +14,7 @@ A weather application that provides real-time weather information and forecasts 
 - **Modern UI**: Clean, intuitive interface with visual weather indicators
 - **Error Handling**: Robust error handling for API requests and user inputs
 
-## Screenshots
+## 📸 Screenshots
 
 ### Current Weather View
 ![Current Weather Screenshot](src/img/weather-1.png)
@@ -22,19 +22,19 @@ A weather application that provides real-time weather information and forecasts 
 ### Major Cities Weather
 ![Major Cities Weather Screenshot](src/img/weather-2.png)
 
-## Technologies Used
+## 🛠️ Technologies Used
 
 - **Backend**: Python, Flask
 - **Frontend**: HTML, CSS, JavaScript, Bootstrap 5
 - **APIs**: OpenWeatherMap API
 - **Deployment**: Ready for deployment on Heroku
 
-## Requirements
+## 📋 Requirements
 
 - Python 3.8 or higher
 - OpenWeatherMap API Key
 
-## Installation
+## 🚀 Installation
 
 1. Clone the repository:
 ```bash
@@ -61,7 +61,7 @@ pip install -r requirements.txt
 OPENWEATHERMAP_API_KEY=your_api_key_here
 ```
 
-## Usage
+## 🔍 Usage
 
 1. Start the application:
 ```bash
@@ -75,7 +75,7 @@ http://127.0.0.1:5000/
 
 3. Enter a city name to get current weather information or click "Load Major Cities" to see weather for global cities
 
-## Deployment
+## 🌐 Deployment
 
 The application includes a `Procfile` for easy deployment to Heroku:
 
@@ -84,7 +84,7 @@ heroku create weatherpy
 git push heroku main
 ```
 
-## Project Structure
+## 📁 Project Structure
 
 ```
 WeatherPy/
@@ -111,6 +111,6 @@ WeatherPy/
 ```
 
 
-## Contributors
+## 👥 Contributors
 
 - Jon Ibarreche <jon.ibarreche@opendeusto.es>
