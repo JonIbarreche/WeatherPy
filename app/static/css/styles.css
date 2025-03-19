@@ -17,8 +17,8 @@ body {
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 #temperature {
@@ -79,7 +79,7 @@ footer {
 
 .forecast-day:hover {
     background-color: #e9ecef;
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
 .forecast-temp {

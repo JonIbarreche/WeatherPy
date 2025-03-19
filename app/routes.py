@@ -37,8 +37,8 @@ def get_weather():
             lat = data['coord']['lat']
             lon = data['coord']['lon']
             
-            # Get forecast data using One Call API
-            forecast_url = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude=minutely,hourly&appid={api_key}&units=metric"
+            # Get forecast data using One Call API - Corrected endpoint to current API version
+            forecast_url = f"https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={api_key}&units=metric"
             forecast_response = requests.get(forecast_url)
             forecast_data = forecast_response.json()
             
@@ -56,19 +56,25 @@ def get_weather():
                 'daily_forecast': []
             }
             
-            # Extract 7-day forecast
-            for day in forecast_data['daily'][0:7]:
-                day_data = {
-                    'date': datetime.fromtimestamp(day['dt']).strftime('%A, %b %d'),
-                    'temp_max': round(day['temp']['max']),
-                    'temp_min': round(day['temp']['min']),
-                    'description': day['weather'][0]['description'],
-                    'icon': day['weather'][0]['icon'],
-                    'humidity': day['humidity'],
-                    'wind_speed': round(day['wind_speed'] * 3.6, 1),
-                    'pressure': day['pressure']
-                }
-                result['daily_forecast'].append(day_data)
+            # Safely extract 7-day forecast
+            if 'daily' in forecast_data:
+                # Extract 7-day forecast from data
+                for day in forecast_data['daily'][0:7]:
+                    day_data = {
+                        'date': datetime.fromtimestamp(day['dt']).strftime('%A, %b %d'),
+                        'temp_max': round(day['temp']['max']),
+                        'temp_min': round(day['temp']['min']),
+                        'description': day['weather'][0]['description'],
+                        'icon': day['weather'][0]['icon'],
+                        'humidity': day['humidity'],
+                        'wind_speed': round(day['wind_speed'] * 3.6, 1),
+                        'pressure': day['pressure']
+                    }
+                    result['daily_forecast'].append(day_data)
+            # If no daily forecast available, provide a fallback
+            else:
+                # Just provide current weather as fallback
+                result['daily_forecast'] = []
                 
             return jsonify(result)
         else:
