@@ -4,7 +4,7 @@
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![Flask](https://img.shields.io/badge/Flask-2.0.1-green)
 
-A professional weather application that provides real-time weather information and forecasts for cities around the world using the OpenWeatherMap API.
+A weather application that provides real-time weather information and forecasts for cities around the world using the OpenWeatherMap API.
 
 ## Features
 
